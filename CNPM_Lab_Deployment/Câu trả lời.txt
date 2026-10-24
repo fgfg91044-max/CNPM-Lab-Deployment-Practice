@@ -1,0 +1,9 @@
+App container: Là một môi trường máy chủ ảo độc lập chứa mã nguồn PHP của ứng dụng (thư mục app) và các công cụ để chạy web (Apache). Nó đảm nhiệm việc nhận yêu cầu từ người dùng, xử lý logic (thêm, sửa, xóa công việc) và trả về giao diện trang web.
+
+Database container: Là một môi trường ảo khác chuyên chạy hệ quản trị cơ sở dữ liệu (MySQL). Nó lưu trữ toàn bộ dữ liệu của ứng dụng (bảng tasks) và thực thi các câu lệnh truy vấn SQL từ App container gửi sang.
+
+Port mapping (Ánh xạ cổng): Là cơ chế kết nối cổng mạng giữa máy tính thật (host) và container. Ví dụ cấu hình 8080:80 giúp ánh xạ cổng 80 của App container ra cổng 8080 trên máy tính, cho phép chúng ta xem trang web bằng cách gõ http://localhost:8080 trên trình duyệt.
+
+Environment variables (Biến môi trường): Là cách truyền các thông số cấu hình quan trọng (như tên database, tài khoản, mật khẩu) cho container khi nó khởi động. Việc này giúp bảo mật thông tin (không phải ghi trực tiếp mật khẩu vào code) và dễ dàng thay đổi cấu hình mà không cần sửa mã nguồn.
+
+Volume: Là cơ chế quản lý dữ liệu bền vững cho Docker. Volume giúp lưu trữ dữ liệu của MySQL một cách an toàn để không bị mất khi container database bị xóa hoặc khởi động lại. Đồng thời, nó cũng giúp đồng bộ trực tiếp mã nguồn từ máy tính vào App container, nhờ đó bạn sửa code PHP xong ra F5 web là thấy thay đổi ngay lập tức.
