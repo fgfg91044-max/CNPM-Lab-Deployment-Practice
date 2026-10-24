@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     title VARCHAR(200) NOT NULL,
     description TEXT NULL,
     is_done TINYINT(1) NOT NULL DEFAULT 0,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-    priority VARCHAR(10) DEFAULT 'Medium',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    priority VARCHAR(10) DEFAULT 'Medium'
 );
 
 INSERT INTO tasks (title, description, is_done)

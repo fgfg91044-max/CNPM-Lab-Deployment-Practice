@@ -104,11 +104,6 @@ try {
     footer { color:var(--muted); font-size:.9rem; text-align:center; padding:10px; }
     @media (max-width:600px) { .task { flex-direction:column; } }
   </style>
-  <select name="priority" required>
-    <option value="Low">Low</option>
-    <option value="Medium" selected>Medium</option>
-    <option value="High">High</option>
-</select>
 </head>
 <body>
 <main>
@@ -127,6 +122,23 @@ try {
       <input type="hidden" name="action" value="add">
       <label for="title">Tên công việc *</label>
       <input id="title" name="title" maxlength="200" required placeholder="Ví dụ: Hoàn thành bài lab Docker">
+      <select>
+        <form method="post">
+    <input type="hidden" name="action" value="add">
+    <label for="title">Tên công việc *</label>
+    <input id="title" name="title" maxlength="200" required placeholder="Ví dụ: Hoàn thành bài lab Docker">
+    
+    <label for="priority">Mức độ ưu tiên</label>
+    <select name="priority" id="priority" required style="margin-bottom: 15px; width: 100%; padding: 8px;">
+        <option value="Low">Low</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="High">High</option>
+    </select>
+
+    <label for="description">Mô tả</label>
+    <textarea id="description" name="description" placeholder="Mô tả ngắn (không bắt buộc)"></textarea>
+    <button type="submit">+ Thêm công việc</button>
+</form>
       <label for="description">Mô tả</label>
       <textarea id="description" name="description" placeholder="Mô tả ngắn (không bắt buộc)"></textarea>
       <button type="submit">+ Thêm công việc</button>
