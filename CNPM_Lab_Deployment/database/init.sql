@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     is_done TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     priority VARCHAR(10) DEFAULT 'Medium'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO tasks (title, description, is_done)
 SELECT 'Tìm hiểu GitHub', 'Tạo repository cá nhân và push source code.', 0

@@ -11,24 +11,23 @@ function e(string $value): string
 $error = '';
 try {
     $pdo = db();
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $action = $_POST['action'] ?? '';
-
-        if ($action === 'add') {
-            $title = trim((string)($_POST['title'] ?? ''));
-            $description = trim((string)($_POST['description'] ?? ''));
-
+    $action = $_POST['action'] ?? ''; // Đặt khai báo ở đây để dùng chung
+        
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($action === 'add') {
+                $title = trim((string)($_POST['title'] ?? ''));
+                $description = trim((string)($_POST['description'] ?? ''));
             if ($title === '') {
                 $error = 'Vui lòng nhập tên công việc.';
             } elseif (mb_strlen($title) > 200) {
                 $error = 'Tên công việc không được vượt quá 200 ký tự.';
             } else {
-                $stmt = $pdo->prepare('INSERT INTO tasks (task_name, priority) VALUES (:task_name, :priority)');
-                $stmt->execute([
-                    'task_name' => $_POST['task_name'],
-                    'priority' => $_POST['priority']
-                ]);
+                $stmt = $pdo->prepare('INSERT INTO tasks (title, description, priority) VALUES (:title, :description, :priority)');
+        $stmt->execute([
+            'title' => $title,
+            'description' => $description,
+            'priority' => $_POST['priority'] ?? 'Medium'
+        ]);
                 header('Location: /');
                 exit;
             }
@@ -60,7 +59,7 @@ try {
     exit;
     }
 
-    $tasks = $pdo->query('SELECT id, title, description, is_done, created_at FROM tasks ORDER BY id DESC')->fetchAll();
+    $tasks = $pdo->query('SELECT id, title, description, is_done, priority, created_at FROM tasks ORDER BY id DESC')->fetchAll();
 } catch (Throwable $exception) {
     http_response_code(500);
     $tasks = [];
@@ -119,12 +118,8 @@ try {
   <section class="panel">
     <h2>Thêm công việc</h2>
     <form method="post">
-      <input type="hidden" name="action" value="add">
-      <label for="title">Tên công việc *</label>
-      <input id="title" name="title" maxlength="200" required placeholder="Ví dụ: Hoàn thành bài lab Docker">
-      <select>
-        <form method="post">
     <input type="hidden" name="action" value="add">
+    
     <label for="title">Tên công việc *</label>
     <input id="title" name="title" maxlength="200" required placeholder="Ví dụ: Hoàn thành bài lab Docker">
     
@@ -137,12 +132,9 @@ try {
 
     <label for="description">Mô tả</label>
     <textarea id="description" name="description" placeholder="Mô tả ngắn (không bắt buộc)"></textarea>
+    
     <button type="submit">+ Thêm công việc</button>
 </form>
-      <label for="description">Mô tả</label>
-      <textarea id="description" name="description" placeholder="Mô tả ngắn (không bắt buộc)"></textarea>
-      <button type="submit">+ Thêm công việc</button>
-    </form>
   </section>
 
   <section class="panel">
