@@ -24,10 +24,10 @@ try {
             } elseif (mb_strlen($title) > 200) {
                 $error = 'Tên công việc không được vượt quá 200 ký tự.';
             } else {
-                $stmt = $pdo->prepare('INSERT INTO tasks (title, description) VALUES (:title, :description)');
+                $stmt = $pdo->prepare('INSERT INTO tasks (task_name, priority) VALUES (:task_name, :priority)');
                 $stmt->execute([
-                    'title' => $title,
-                    'description' => $description !== '' ? $description : null,
+                    'task_name' => $_POST['task_name'],
+                    'priority' => $_POST['priority']
                 ]);
                 header('Location: /');
                 exit;
@@ -49,6 +49,15 @@ try {
             header('Location: /');
             exit;
         }
+        } elseif ($action === 'edit') {
+    $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+    $title = trim($_POST['title']);
+    if ($id && $title) {
+        $stmt = $pdo->prepare('UPDATE tasks SET title = :title WHERE id = :id');
+        $stmt->execute(['title' => $title, 'id' => $id]);
+    }
+    header('Location: /');
+    exit;
     }
 
     $tasks = $pdo->query('SELECT id, title, description, is_done, created_at FROM tasks ORDER BY id DESC')->fetchAll();
@@ -64,7 +73,10 @@ try {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Task Manager — Lab Nhập môn CNPM</title>
+  <title>Quản lý công việc - Bài thực hành</title>
+  <style>
+    body { background-color: #e6f2ff; } /* Màu xanh nhạt */
+  </style>
   <style>
     :root { color-scheme: light; --ink:#172033; --muted:#64748b; --line:#e2e8f0; --brand:#2563eb; }
     * { box-sizing: border-box; }
@@ -92,6 +104,11 @@ try {
     footer { color:var(--muted); font-size:.9rem; text-align:center; padding:10px; }
     @media (max-width:600px) { .task { flex-direction:column; } }
   </style>
+  <select name="priority" required>
+    <option value="Low">Low</option>
+    <option value="Medium" selected>Medium</option>
+    <option value="High">High</option>
+</select>
 </head>
 <body>
 <main>
@@ -122,6 +139,9 @@ try {
       <p class="empty">Chưa có công việc nào.</p>
     <?php else: ?>
       <?php foreach ($tasks as $task): ?>
+        <span> 
+          <?php echo htmlspecialchars($task['priority']); ?>
+        <span>
         <article class="task <?= (int)$task['is_done'] === 1 ? 'done' : '' ?>">
           <div>
             <h3><?= e((string)$task['title']) ?></h3>
@@ -141,6 +161,12 @@ try {
               <input type="hidden" name="id" value="<?= (int)$task['id'] ?>">
               <button class="danger" type="submit">Xóa</button>
             </form>
+            <form method="post" style="display: inline-block; margin-left: 5px;">
+    <input type="hidden" name="action" value="edit">
+    <input type="hidden" name="id" value="<?= (int)$task['id'] ?>">
+    <input type="text" name="title" value="<?= e((string)$task['title']) ?>" required>
+    <button class="secondary" type="submit">Sửa</button>
+</form>
           </div>
         </article>
       <?php endforeach; ?>
